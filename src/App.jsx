@@ -1,14 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-
-
+import './App.css'
 
 function App() {
   const [length, setLength] = useState(8)
-  const [numberAllowed, setNumberAllowed] = useState(false);
+  const [numberAllowed, setNumberAllowed] = useState(false)
   const [charAllowed, setCharAllowed] = useState(false)
   const [password, setPassword] = useState("")
 
-  //useRef hook
   const passwordRef = useRef(null)
 
   const passwordGenerator = useCallback(() => {
@@ -20,79 +18,69 @@ function App() {
     for (let i = 1; i <= length; i++) {
       let char = Math.floor(Math.random() * str.length + 1)
       pass += str.charAt(char)
-      
     }
 
     setPassword(pass)
-
-
-  }, [length, numberAllowed, charAllowed, setPassword])
+  }, [length, numberAllowed, charAllowed])
 
   const copyPasswordToClipboard = useCallback(() => {
-    passwordRef.current?.select();
-    passwordRef.current?.setSelectionRange(0, 999);
+    passwordRef.current?.select()
+    passwordRef.current?.setSelectionRange(0, 999)
     window.navigator.clipboard.writeText(password)
   }, [password])
 
   useEffect(() => {
     passwordGenerator()
   }, [length, numberAllowed, charAllowed, passwordGenerator])
+
   return (
-    
-    <div >
-      <h1 >Password generator</h1>
-    <div >
+    <div className="container">
+      <h1>Password generator</h1>
+
+      <div className="password-display">
         <input
-            type="text"
-            value={password}
-            className="outline-none w-full py-1 px-3"
-            placeholder="Password"
-            readOnly
-            ref={passwordRef}
+          type="text"
+          value={password}
+          placeholder="Password"
+          readOnly
+          ref={passwordRef}
         />
-        <button
-        onClick={copyPasswordToClipboard}
-        
-        >copy</button>
-        
-    </div>
-    <div >
-      <div >
-        <input 
-        type="range"
-        min={6}
-        max={100}
-        value={length}
-         
-         onChange={(e) => {setLength(e.target.value)}}
+        <button onClick={copyPasswordToClipboard}>Copy</button>
+      </div>
+
+      <div className="settings">
+        <div className="setting-group">
+          <input
+            type="range"
+            min={6}
+            max={100}
+            value={length}
+            onChange={(e) => setLength(e.target.value)}
           />
           <label>Length: {length}</label>
-      </div>
-      <div>
-      <input
-          type="checkbox"
-          defaultChecked={numberAllowed}
-          id="numberInput"
-          onChange={() => {
-              setNumberAllowed((prev) => !prev);
-          }}
-      />
-      <label htmlFor="numberInput">Numbers</label>
-      </div>
-      <div>
+        </div>
+
+        <div className="setting-group">
           <input
-              type="checkbox"
-              defaultChecked={charAllowed}
-              id="characterInput"
-              onChange={() => {
-                  setCharAllowed((prev) => !prev )
-              }}
+            type="checkbox"
+            id="numberInput"
+            defaultChecked={numberAllowed}
+            onChange={() => setNumberAllowed((prev) => !prev)}
+          />
+          <label htmlFor="numberInput">Numbers</label>
+        </div>
+
+        <div className="setting-group">
+          <input
+            type="checkbox"
+            id="characterInput"
+            defaultChecked={charAllowed}
+            onChange={() => setCharAllowed((prev) => !prev)}
           />
           <label htmlFor="characterInput">Characters</label>
+        </div>
       </div>
     </div>
-</div>
-    
   )
 }
 
